@@ -24,22 +24,23 @@ import java.util.List;
 
 public class productoCrear extends AppCompatActivity {
     Button btn1, btn2;
-    EditText txtCodigo, txtNombre, txtPrecio;
+    EditText editText1, editText2,editText3;
     String nombre;
     Double precio;
     Integer tipo, codigo;
     Spinner spTipo;
     private Cursor fila;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_producto_crear);
+
         btn1 = findViewById(R.id.button1);
-        btn2 = findViewById(R.id.btnEscaner);
         spTipo = findViewById(R.id.spinner);
-        txtCodigo = findViewById(R.id.txtCodigo);
-        txtNombre = findViewById(R.id.txtNombre);
-        txtPrecio = findViewById(R.id.txtPrecio);
+        editText1 = findViewById(R.id.txtCodigo);
+        editText2 = findViewById(R.id.txtNombre);
+        editText3 = findViewById(R.id.txtPrecio);
 
         DbHelper dbHelper = new DbHelper(productoCrear.this);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -47,7 +48,8 @@ public class productoCrear extends AppCompatActivity {
 
         List<Tipos> list = llenarTipos();
 
-        ArrayAdapter<Tipos> adapter = new ArrayAdapter<>(getApplicationContext(),  R.layout.support_simple_spinner_dropdown_item, list);
+        ArrayAdapter<Tipos> adapter = new ArrayAdapter<>(getApplicationContext(), androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, list);
+
         spTipo.setAdapter(adapter);
 
         spTipo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -67,19 +69,19 @@ public class productoCrear extends AppCompatActivity {
             public void onClick(View view) {
                 DbHelper admin=new DbHelper(productoCrear.this);
                 SQLiteDatabase db=admin.getWritableDatabase();
-                codigo = Integer.valueOf(txtCodigo.getText().toString());
-                nombre = txtNombre.getText().toString();
-                precio = Double.valueOf(txtPrecio.getText().toString());
-                fila=db.rawQuery("select * from t_productos where nombre='"+
-                        nombre+"'",null);
+                codigo = Integer.valueOf(editText1.getText().toString());
+                nombre = editText2.getText().toString();
+                precio = Double.valueOf(editText3.getText().toString());
+                fila=db.rawQuery("select * from t_productos where id_producto='"+
+                        codigo+"'",null);
                 try {
                     if(fila.moveToFirst()){
                         String nom=fila.getString(1);
                         if (nombre.equals(nom)){
                             Toast.makeText(productoCrear.this, "¡Producto ya existente!", Toast.LENGTH_SHORT).show();
-                            txtCodigo.setText("");
-                            txtNombre.setText("");
-                            txtPrecio.setText("");
+                            editText1.setText("");
+                            editText2.setText("");
+                            editText3.setText("");
                         }
                     }
                     else {
@@ -104,13 +106,16 @@ public class productoCrear extends AppCompatActivity {
                 }
             }
         });
+
+
     }
     private List<Tipos> llenarTipos(){
         List<Tipos> listaTipo = new ArrayList<>();
         dbTipos dbTipos = new dbTipos(productoCrear.this);
         Cursor cursor = dbTipos.mostrarTipos();
-        if(cursor != null && cursor.moveToFirst())
+        if(cursor != null)
         {
+            if(cursor.moveToFirst()){
                 do{
                     Tipos tip = new Tipos();
 
@@ -118,10 +123,10 @@ public class productoCrear extends AppCompatActivity {
                     tip.setNombre(cursor.getString(cursor.getColumnIndex("nombre")));
                     listaTipo.add(tip);
                 }while (cursor.moveToNext());
+            }
         }
         dbTipos.close();
 
         return listaTipo;
     }
-
 }

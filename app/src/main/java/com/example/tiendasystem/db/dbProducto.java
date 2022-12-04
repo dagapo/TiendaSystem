@@ -26,7 +26,7 @@ public class dbProducto extends DbHelper{
             SQLiteDatabase db = dbHelper.getWritableDatabase();
 
             ContentValues values = new ContentValues();
-            values.put("id_productos", codigo);
+            values.put("id_producto", codigo);
             values.put("nombre", nombre);
             values.put("precio", precio);
             values.put("tipo", tipo);
@@ -147,7 +147,7 @@ public class dbProducto extends DbHelper{
         productos produtos = null;
         Cursor cursorProducto = null;
 
-        cursorProducto = db.rawQuery("SELECT t_productos.id_productos,t_productos.nombre,t_productos.precio,t_tipos.nombre FROM "+TABLE_PRODUCTOS+" INNER JOIN " +TABLE_TIPOS+" ON t_productos.tipo=t_tipos.id_tipos", null);
+        cursorProducto = db.rawQuery("SELECT t_productos.id_producto,t_productos.nombre,t_productos.precio,t_tipos.nombre FROM "+TABLE_PRODUCTOS+" INNER JOIN " +TABLE_TIPOS+" ON t_productos.tipo=t_tipos.id_tipos", null);
 
         if(cursorProducto.moveToFirst())
         {
